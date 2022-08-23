@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" ng-app="TrelloApp">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-cookies.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}">
+    <script src="{% static 'js/helper.js' %}"></script>
+    <title>Trello Board</title>
+  </head>
+  <body ng-controller="trelloCtrl">
+    <div align="center">
+      <button type="button" class="btn btn-primary" id="createCard" ng-click="createNewCard()" data-bs-toggle="modal" data-bs-target="#createCardModal">Create new card</button>
+    </div>
+    <div class="container h-100 text-center" style="height: 100;">
+      <div class="row vh-100 align-items-start">
+        <div class="col-3 border h-75 m-3 p-2" ng-repeat="(columnName, columnList) in cardslist track by $index" style="overflow-y: scroll">{% verbatim  %}{{ columnName }}{% endverbatim  %} Column
+          <div class="card mt-3 mx-2" ng-repeat="card in columnList track by $index">
+            <div class="card-body" ng-click="editCard(columnName, columnList, $index)">
+              <h5 class="card-title" value=>{% verbatim %}{{ card.title }}{% endverbatim %}</h5>
+              <p class="card-text">
+                {% verbatim %}{{ card.description }}{% endverbatim %}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="createCardModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="createCardLabel" aria-hidden="true" style="z-index: -1;">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <button type="button" class="btn-close" ng-click="closeModal()"data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <div class="modal-body">
+            <div>
+              <span class="small red" ng-if="validationError">Please make title all alphabets, description more than 25 characters and select a list</span>
+            </div>
+            <div>
+              <label for="card-title">Title</label>
+              <input type="text" ng-model="modal.title" id="card-tile" class="m-2" />
+            </div>
+            <div>
+              <label for="card-description">Description</label>
+              <input type="text" id="card-description" class="m-2" ng-model="modal.description" />
+            </div>
+            <div ng-if="!editMode">
+              <label for="card-list">List</label>
+              <select name="card-list" id="card-list" ng-model="modal.listname">
+                <option ng-repeat="(name, list) in cardslist track by $index">{% verbatim %}{{ name }}{% endverbatim %}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <div ng-if="editMode">
+              <button class="btn btn-outline-warning m-2" ng-click="deleteCard()"> Delete card </button>
+            </div>
+            <button type="button" id="closeModal" ng-click="closeModal()"class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-outline-success" ng-click="save()">Save Changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js" integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK" crossorigin="anonymous"></script>
+    {% comment %} <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> {% endcomment %}
+  </body>
+</html>
